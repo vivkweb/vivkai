@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivk AI</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f9f9f9; }
+    #chat { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+    textarea { width: 100%; padding: 10px; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    #output { margin-top: 20px; text-align: left; }
+    img { max-width: 100%; margin-top: 10px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <h2>🤖 مرحباً بك في Vivk AI</h2>
+    <textarea id="input" rows="3" placeholder="اكتب سؤالك أو اطلب صورة..."></textarea>
+    <br>
+    <button onclick="sendMessage()">إرسال</button>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("input").value;
+      const output = document.getElementById("output");
+      output.innerHTML += `<p><b>أنت:</b> ${input}</p>`;
+
+      let response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input })
+      });
+
+      let data = await response.json();
+
+      if (data.reply) {
+        output.innerHTML += `<p><b>Vivk:</b> ${data.reply}</p>`;
+      }
+      if (data.image) {
+        output.innerHTML += `<img src="${data.image}" alt="صورة مولدة" />`;
+      }
+    }
+  </script>
+</body>
+</html>
